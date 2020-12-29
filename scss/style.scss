@@ -33,3 +33,14 @@ div.buttons {
     margin: 2px;
     }
 }
+
+div.gameControlBtns {
+    display: flex;
+    justify-content: center;
+    button {
+        width: 250px;
+        height: 50px;
+        font-size: 2.5em;
+        margin: 2px;
+    }
+}
