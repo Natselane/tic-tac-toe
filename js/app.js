@@ -23,14 +23,13 @@ const GameBoard = (() => {
 
     return {
         gameArray,
-        gameCount,
         getGameCount,
         setGameCount
     };
 })();
 
 const WinningPatterns = (() => {
-    let patterns = {
+    const patterns = {
         0: [0, 1, 2],
         1: [0, 3, 6],
         2: [0, 4, 8],
@@ -41,12 +40,12 @@ const WinningPatterns = (() => {
         7: [6, 7, 8]
     };
 
-    let checkWin = () => {
+    const checkWin = () => {
         for (let i = 0; i < 8; i++) {
             if (GameBoard.gameArray[patterns[i][0]][1] == "o" && GameBoard.gameArray[patterns[i][1]][1] == "o" && GameBoard.gameArray[patterns[i][2]][1] == "o") {
-                console.log("3 times o");
+                DisplayController.infoHtml.innerText = "O wins";
             } else if (GameBoard.gameArray[patterns[i][0]][1] == "x" && GameBoard.gameArray[patterns[i][1]][1] == "x" && GameBoard.gameArray[patterns[i][2]][1] == "x") {
-                console.log("3 times x");
+                DisplayController.infoHtml.innerText = "X wins";
             };
         };
     };
@@ -100,6 +99,7 @@ const DisplayController = (() => {
     const boardHtml = document.querySelectorAll(".game-table td");
     const choicesHtml = document.querySelectorAll(".choice");
     const startHtml = document.querySelector("#start");
+    const infoHtml = document.querySelector(".info");
 
     let gameCount = GameBoard.getGameCount();
     const placeMarker = (playerMarker, index, square) => {
@@ -122,7 +122,8 @@ const DisplayController = (() => {
         startGame,
         boardHtml,
         choicesHtml,
-        startHtml
+        startHtml,
+        infoHtml
     };
 })();
 
