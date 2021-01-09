@@ -21,8 +21,21 @@ const GameBoard = (() => {
         return gameCount;
     };
 
+    const resetGameCount = () => {
+        gameCount = 0;
+    }
+
+    const resetGameArray = () => {
+        for (let i = 0; i < 9; i++) {
+            gameArray[i][0] = "free";
+            gameArray[i][1] = "";
+        }
+    }
+
     return {
         gameArray,
+        resetGameArray,
+        resetGameCount,
         getGameCount,
         setGameCount
     };
@@ -42,9 +55,12 @@ const WinningPatterns = (() => {
 
     const checkWin = () => {
         for (let i = 0; i < 8; i++) {
-            if (GameBoard.gameArray[patterns[i][0]][1] == "o" && GameBoard.gameArray[patterns[i][1]][1] == "o" && GameBoard.gameArray[patterns[i][2]][1] == "o") {
+            let win1 = patterns[i][0];
+            let win2 = patterns[i][1];
+            let win3 = patterns[i][2];
+            if (GameBoard.gameArray[win1][1] == "o" && GameBoard.gameArray[win2][1] == "o" && GameBoard.gameArray[win3][1] == "o") {
                 DisplayController.infoHtml.innerText = "O wins";
-            } else if (GameBoard.gameArray[patterns[i][0]][1] == "x" && GameBoard.gameArray[patterns[i][1]][1] == "x" && GameBoard.gameArray[patterns[i][2]][1] == "x") {
+            } else if (GameBoard.gameArray[win1][1] == "x" && GameBoard.gameArray[win2][1] == "x" && GameBoard.gameArray[win3][1] == "x") {
                 DisplayController.infoHtml.innerText = "X wins";
             };
         };
@@ -100,6 +116,7 @@ const DisplayController = (() => {
     const choicesHtml = document.querySelectorAll(".choice");
     const startHtml = document.querySelector("#start");
     const infoHtml = document.querySelector(".info");
+    const resetHtml = document.querySelector("#reset");
 
     let gameCount = GameBoard.getGameCount();
     const placeMarker = (playerMarker, index, square) => {
@@ -116,14 +133,26 @@ const DisplayController = (() => {
         });
         startHtml.style.display = "none";
     };
+
+    const resetGameBoard = () => {
+        for (let i = 0; i < 9; i++) {
+            boardHtml[i].innerText = "";
+        };
+        choicesHtml.forEach(choice => {
+            choice.style.display = "initial";
+        });
+        startHtml.style.display = "initial";
+    };
     
     return {
         placeMarker,
         startGame,
+        resetGameBoard,
         boardHtml,
         choicesHtml,
         startHtml,
-        infoHtml
+        infoHtml,
+        resetHtml
     };
 })();
 
@@ -154,5 +183,11 @@ const PlayGame = (() => {
                 });
             });
         });
-    });     
+    });  
+    
+    DisplayController.resetHtml.addEventListener("click", () => {
+        DisplayController.resetGameBoard();
+        GameBoard.resetGameArray();
+        GameBoard.resetGameCount();
+    })
 })();
