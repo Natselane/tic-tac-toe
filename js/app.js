@@ -1,4 +1,7 @@
 const GameBoard = (() => {
+
+    let gameCount = 0;
+
     let gameArray = {
         0: ["free", ""],
         1: ["free", ""],
@@ -10,8 +13,6 @@ const GameBoard = (() => {
         7: ["free", ""],
         8: ["free", ""],
     }
-
-    let gameCount = 0;
 
     const setGameCount = () => {
         gameCount++;
@@ -45,19 +46,38 @@ const GameBoard = (() => {
 const Players = (() => { 
     let player1;
     let player2;
-    let player2Choice;
-    let player2Marker;
 
     const playerFactory = (name, marker) => {
         return { name, marker };
     }
 
+    
+    const getRandomIntInclusive = (min, max) => {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+    }
+
+    const computerMove = (computerMarker, finished) => {
+        let num; 
+        let gameCount = GameBoard.getGameCount();
+
+        do {
+            num = getRandomIntInclusive(0, 8);
+        }
+        while (GameBoard.gameArray[num][0] != "free" && GameBoard.getGameCount() < 4); 
+        if (gameCount < 4 && !finished) {
+            GameBoard.gameArray[num][0] = "taken";
+            GameBoard.gameArray[num][1] = computerMarker;
+            DisplayController.boardHtml[num].innerText = computerMarker;
+        }
+    }
+
     return {
         player1,
         player2,
-        player2Choice, 
-        player2Marker,
-        playerFactory
+        playerFactory,
+        computerMove
     }
 })();
 
@@ -79,10 +99,18 @@ const Win = (() => {
             let win2 = patterns[i][1];
             let win3 = patterns[i][2];
             if (GameBoard.gameArray[win1][1] == "o" && GameBoard.gameArray[win2][1] == "o" && GameBoard.gameArray[win3][1] == "o") {
-                DisplayController.infoHtml.innerText = "O wins";
+                DisplayController.showWinner("O");
+                console.log("O WON")
+                DisplayController.highlightSquares(win1);
+                DisplayController.highlightSquares(win2);
+                DisplayController.highlightSquares(win3);
                 return true;
             } else if (GameBoard.gameArray[win1][1] == "x" && GameBoard.gameArray[win2][1] == "x" && GameBoard.gameArray[win3][1] == "x") {
-                DisplayController.infoHtml.innerText = "X wins";
+                DisplayController.showWinner("X");
+                console.log("X WON")
+                DisplayController.highlightSquares(win1);
+                DisplayController.highlightSquares(win2);
+                DisplayController.highlightSquares(win3);
                 return true;
             }
         }
@@ -99,11 +127,13 @@ const DisplayController = (() => {
     const markerChoicesHtml = document.querySelectorAll(".marker-choice");
     const playerChoicesHtml = document.querySelectorAll(".player-choice");
     const playerChoicesButtonsHtml = document.querySelector(".player-choice-buttons");
-    const infoHtml = document.querySelector(".info");
+    const winnerInfoHtml = document.querySelector("#winner");
     const gameBoardHtml = document.querySelector(".game-board");
     const player2InfoHtml = document.querySelector("#player2-info");
+    const player1InfoHtml = document.querySelector("#player1-info");
+    const playerInfoHtml = document.querySelectorAll(".player-info");
+    const newGameHtml = document.querySelector("#new-game");
 
-    let gameCount = GameBoard.getGameCount();
 
     const hidePlayerChoice = () => {
         playerChoicesButtonsHtml.style.display = "none";
@@ -127,8 +157,8 @@ const DisplayController = (() => {
         }
     }
 
-    const placeMarker = (playerMarker, index, square) => {
-        if (gameCount < 6) {
+    const placeMarker = (playerMarker, index, square, finished) => {
+        if (GameBoard.getGameCount() < 6 && !finished) {
             GameBoard.gameArray[index][0] = "taken";
             GameBoard.gameArray[index][1] = playerMarker;
             square.innerText = playerMarker;
@@ -154,23 +184,20 @@ const DisplayController = (() => {
         }   
     }
 
-    const getRandomIntInclusive = (min, max) => {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+    const showWinner = (winner) => {
+        winnerInfoHtml.style.display = "block";
+        winnerInfoHtml.innerText = `${winner} wins!`;
+        playerInfoHtml.forEach(item => {
+            item.style.display = "none";
+        })
+        newGameHtml.style.display = "block";
     }
 
-    const computerMove = (computerMarker) => {
-        let num = getRandomIntInclusive(0, 8); 
-        let gameCount = GameBoard.getGameCount();
-        while (GameBoard.gameArray[num][0] != "free" && gameCount < 5) {
-            num = getRandomIntInclusive(0, 8);
-        }
-        if (gameCount < 5) {
-            GameBoard.gameArray[num][0] = "taken";
-            GameBoard.gameArray[num][1] = computerMarker;
-            DisplayController.boardHtml[num].innerText = computerMarker;
-        }
+    const highlightSquares = (square) => {
+        boardHtml[square].style.background = "#A8DADC";
+        boardHtml[square].style.transform = "rotate(10deg)";
+        boardHtml[square].style["box-shadow"] = "15px 15px 3px 5px #08172c"
+        boardHtml[square].style.border = "3px solid white";
     }
     
     return {
@@ -181,12 +208,13 @@ const DisplayController = (() => {
         changePlayer2Name,
         resetGameBoard,
         stopGame,
-        computerMove,
+        showWinner, 
+        highlightSquares,
         boardHtml,
         markerChoicesHtml,
         playerChoicesHtml,
         player2InfoHtml,
-        infoHtml
+        winnerInfoHtml
     }
 })();                                              
 
@@ -197,7 +225,6 @@ const PlayGame = (() => {
     DisplayController.playerChoicesHtml.forEach(choice => { 
         choice.addEventListener("click", () => {
             Players.player2Choice = choice.id.toLowerCase();
-            console.log(Players.player2Choice);
             DisplayController.hidePlayerChoice();
             DisplayController.startGame();
             Players.player1 = Players.playerFactory("player1", "x");
@@ -208,17 +235,24 @@ const PlayGame = (() => {
 
 
     DisplayController.boardHtml.forEach((square, index) => {
-                square.addEventListener("click", () => {
-                    if (GameBoard.gameArray[index][0] == "free") {
-                        let gameCount = GameBoard.getGameCount();
-                        if (Players.player1.marker.includes("x") && (gameCount % 2 === 0 || gameCount === 0)) {
-                            DisplayController.placeMarker(Players.player1.marker, index, square);
-                            GameBoard.setGameCount();
-                        } 
-                        
-                        Win.checkWin();
-                    }
-                })
+        square.addEventListener("click", squareClick = () => {
+            if (GameBoard.gameArray[index][0] == "free") {
+
+                // When playing with computer
+                if(Players.player2.name === "computer") {
+                    DisplayController.placeMarker(Players.player1.marker, index, square, Win.checkWin());
+                    Win.checkWin();
+                    Players.computerMove(Players.player2.marker, Win.checkWin());
+                    Win.checkWin();
+                    GameBoard.setGameCount();
+                }
+
+                // When playing with player 2
+                if(Players.player2.name === "player2") {
+                    console.log("Player 2 plays");
+                }
+            }
+        })
             
     })
 })();
