@@ -110,14 +110,12 @@ const Win = (() => {
             let win3 = patterns[i][2];
             if (GameBoard.gameArray[win1][1] == "o" && GameBoard.gameArray[win2][1] == "o" && GameBoard.gameArray[win3][1] == "o") {
                 DisplayController.showWinner("O");
-                console.log("O WON")
                 DisplayController.highlightSquares(win1);
                 DisplayController.highlightSquares(win2);
                 DisplayController.highlightSquares(win3);
                 return true;
             } else if (GameBoard.gameArray[win1][1] == "x" && GameBoard.gameArray[win2][1] == "x" && GameBoard.gameArray[win3][1] == "x") {
                 DisplayController.showWinner("X");
-                console.log("X WON")
                 DisplayController.highlightSquares(win1);
                 DisplayController.highlightSquares(win2);
                 DisplayController.highlightSquares(win3);
@@ -207,12 +205,16 @@ const DisplayController = (() => {
 
     const showWinner = (winner) => {
         winnerInfoHtml.style.display = "block";
-        if (winner == "O" || winner == "X")
-        {
-            winnerInfoHtml.innerText = `${winner} wins!`;
+        if (winner === "X") {
+            winnerInfoHtml.innerText = `Player 1 wins!`;
+        } else if (winner === "O" && Players.player2.name === "player2") {
+            winnerInfoHtml.innerText = `Player 2 wins!`;
+        } else if (winner === "O" && Players.player2.name === "computer") {
+            winnerInfoHtml.innerText = `Computer wins!`;  
         } else if (winner == "tie") {
             winnerInfoHtml.innerText = `It's a tie!`;
         }
+
         playerInfoHtml.forEach(item => {
             item.style.display = "none";
         })
