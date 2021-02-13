@@ -51,7 +51,6 @@ const Players = (() => {
         return { name, marker };
     }
 
-    
     const getRandomIntInclusive = (min, max) => {
         min = Math.ceil(min);
         max = Math.floor(max);
@@ -114,11 +113,20 @@ const Win = (() => {
                 return true;
             }
         }
+        return false;
+    }
+
+    const checkTie = () => {
+        if (GameBoard.getGameCount() == 5 && checkWin() == false) {
+            console.log("its a tie");
+            DisplayController.showWinner("tie");
+        }
     }
 
     return {
         patterns,
-        checkWin
+        checkWin,
+        checkTie
     }
 })();
 
@@ -130,7 +138,6 @@ const DisplayController = (() => {
     const winnerInfoHtml = document.querySelector("#winner");
     const gameBoardHtml = document.querySelector(".game-board");
     const player2InfoHtml = document.querySelector("#player2-info");
-    const player1InfoHtml = document.querySelector("#player1-info");
     const playerInfoHtml = document.querySelectorAll(".player-info");
     const newGameHtml = document.querySelector("#new-game");
 
@@ -166,27 +173,27 @@ const DisplayController = (() => {
     }
 
     const resetGameBoard = () => {
-        for (let i = 0; i < 9; i++) {
+        for (let i = 0; i <= 8; i++) {
             boardHtml[i].innerText = "";
         }
-        markerChoicesHtml.forEach(choice => {
-            choice.style.display = "initial";
-        })
-        playerChoicesHtml.forEach(choice => {
-            choice.style.display = "initial";
-        })
-    }
+        gameBoardHtml.style.display = "none";
+        playerChoicesButtonsHtml.style.display = "flex";
 
-    const stopGame = (square, win) => {
-        if (win) { 
-            square.removeEventListener("click", squareClick);
-            console.log("Stopgame");
-        }   
+        for(let i = 0; i <= 8; i++) {
+            GameBoard.gameArray[i][0] = "free";
+            GameBoard.gameArray[i][1] = "";
+        }
+        GameBoard.resetGameCount();
     }
 
     const showWinner = (winner) => {
         winnerInfoHtml.style.display = "block";
-        winnerInfoHtml.innerText = `${winner} wins!`;
+        if (winner == "O" || winner == "X")
+        {
+            winnerInfoHtml.innerText = `${winner} wins!`;
+        } else if (winner == "tie") {
+            winnerInfoHtml.innerText = `It's a tie!`;
+        }
         playerInfoHtml.forEach(item => {
             item.style.display = "none";
         })
@@ -207,14 +214,14 @@ const DisplayController = (() => {
         startGame,
         changePlayer2Name,
         resetGameBoard,
-        stopGame,
         showWinner, 
         highlightSquares,
         boardHtml,
         markerChoicesHtml,
         playerChoicesHtml,
         player2InfoHtml,
-        winnerInfoHtml
+        winnerInfoHtml,
+        newGameHtml
     }
 })();                                              
 
@@ -233,9 +240,9 @@ const PlayGame = (() => {
         })
     })
 
-
+    // Game play
     DisplayController.boardHtml.forEach((square, index) => {
-        square.addEventListener("click", squareClick = () => {
+        square.addEventListener("click", () => {
             if (GameBoard.gameArray[index][0] == "free") {
 
                 // When playing with computer
@@ -245,6 +252,7 @@ const PlayGame = (() => {
                     Players.computerMove(Players.player2.marker, Win.checkWin());
                     Win.checkWin();
                     GameBoard.setGameCount();
+                    Win.checkTie();
                 }
 
                 // When playing with player 2
@@ -252,7 +260,10 @@ const PlayGame = (() => {
                     console.log("Player 2 plays");
                 }
             }
-        })
-            
+        })     
+    })
+
+    DisplayController.newGameHtml.addEventListener("click", () => {
+        window.location.reload();
     })
 })();
