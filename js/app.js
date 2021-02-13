@@ -1,6 +1,7 @@
 const GameBoard = (() => {
 
     let gameCount = 0;
+    let moveCount = 0;
 
     let gameArray = {
         0: ["free", ""],
@@ -26,6 +27,14 @@ const GameBoard = (() => {
         gameCount = 0;
     }
 
+    const setMoveCount = () => {
+        moveCount++;
+    }
+
+    const getMoveCount = () => {
+        return moveCount;
+    }
+
     const resetGameArray = () => {
         for (let i = 0; i < 9; i++) {
             gameArray[i][0] = "free";
@@ -39,7 +48,9 @@ const GameBoard = (() => {
         resetGameArray,
         resetGameCount,
         getGameCount,
-        setGameCount
+        setGameCount,
+        getMoveCount,
+        setMoveCount
     }
 })();
 
@@ -116,10 +127,17 @@ const Win = (() => {
         return false;
     }
 
-    const checkTie = () => {
-        if (GameBoard.getGameCount() == 5 && checkWin() == false) {
-            console.log("its a tie");
-            DisplayController.showWinner("tie");
+    const checkTie = (player2) => {
+        if (player2 === "computer") {
+            if (GameBoard.getGameCount() == 5 && checkWin() == false) {
+                console.log("its a tie");
+                DisplayController.showWinner("tie");
+            }
+        } else if (player2 === "player2") {
+            if (GameBoard.getMoveCount() == 9 && checkWin() == false) {
+                console.log("its a tie");
+                DisplayController.showWinner("tie");
+            }
         }
     }
 
@@ -252,12 +270,23 @@ const PlayGame = (() => {
                     Players.computerMove(Players.player2.marker, Win.checkWin());
                     Win.checkWin();
                     GameBoard.setGameCount();
-                    Win.checkTie();
+                    Win.checkTie(Players.player2.name);
                 }
 
                 // When playing with player 2
                 if(Players.player2.name === "player2") {
-                    console.log("Player 2 plays");
+                    // Player 1
+                    if (GameBoard.getMoveCount() % 2 === 0 || GameBoard.getMoveCount === 0) {
+                        DisplayController.placeMarker(Players.player1.marker, index, square, Win.checkWin());
+                        GameBoard.setMoveCount();
+                        Win.checkWin();
+                    } else if (GameBoard.getMoveCount() % 2 != 0) {
+                        DisplayController.placeMarker(Players.player2.marker, index, square, Win.checkWin());
+                        GameBoard.setMoveCount();
+                        Win.checkWin();
+                        GameBoard.setGameCount();
+                    }
+                    Win.checkTie(Players.player2.name);
                 }
             }
         })     
