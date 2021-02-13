@@ -156,6 +156,7 @@ const DisplayController = (() => {
     const winnerInfoHtml = document.querySelector("#winner");
     const gameBoardHtml = document.querySelector(".game-board");
     const player2InfoHtml = document.querySelector("#player2-info");
+    const player1InfoHtml = document.querySelector("#player1-info");
     const playerInfoHtml = document.querySelectorAll(".player-info");
     const newGameHtml = document.querySelector("#new-game");
 
@@ -221,8 +222,22 @@ const DisplayController = (() => {
     const highlightSquares = (square) => {
         boardHtml[square].style.background = "#A8DADC";
         boardHtml[square].style.transform = "rotate(10deg)";
-        boardHtml[square].style["box-shadow"] = "15px 15px 3px 5px #08172c"
+        boardHtml[square].style["box-shadow"] = "15px 15px 3px 5px #08172c";
         boardHtml[square].style.border = "3px solid white";
+    }
+
+    const highlightPlayer = (player) => {
+        if (player === "player1") {
+            player1InfoHtml.style.background = "#A8DADC";
+            player1InfoHtml.style["box-shadow"] = "10px 10px 3px 5px #08172c";
+            player2InfoHtml.style.background = "#f1faee";
+            player2InfoHtml.style["box-shadow"] = "none";
+        } else {
+            player2InfoHtml.style.background = "#A8DADC";
+            player2InfoHtml.style["box-shadow"] = "10px 10px 3px 5px #08172c";
+            player1InfoHtml.style.background = "#f1faee";
+            player1InfoHtml.style["box-shadow"] = "none";
+        }
     }
     
     return {
@@ -234,6 +249,7 @@ const DisplayController = (() => {
         resetGameBoard,
         showWinner, 
         highlightSquares,
+        highlightPlayer,
         boardHtml,
         markerChoicesHtml,
         playerChoicesHtml,
@@ -255,6 +271,7 @@ const PlayGame = (() => {
             Players.player1 = Players.playerFactory("player1", "x");
             Players.player2 = Players.playerFactory(Players.player2Choice, "o");
             DisplayController.changePlayer2Name(Players.player2Choice);
+            DisplayController.highlightPlayer("player1");
         })
     })
 
@@ -266,8 +283,10 @@ const PlayGame = (() => {
                 // When playing with computer
                 if(Players.player2.name === "computer") {
                     DisplayController.placeMarker(Players.player1.marker, index, square, Win.checkWin());
+                    GameBoard.setMoveCount();
                     Win.checkWin();
                     Players.computerMove(Players.player2.marker, Win.checkWin());
+                    GameBoard.setMoveCount();
                     Win.checkWin();
                     GameBoard.setGameCount();
                     Win.checkTie(Players.player2.name);
@@ -276,15 +295,18 @@ const PlayGame = (() => {
                 // When playing with player 2
                 if(Players.player2.name === "player2") {
                     // Player 1
+
                     if (GameBoard.getMoveCount() % 2 === 0 || GameBoard.getMoveCount === 0) {
                         DisplayController.placeMarker(Players.player1.marker, index, square, Win.checkWin());
                         GameBoard.setMoveCount();
                         Win.checkWin();
+                        DisplayController.highlightPlayer("player2");
                     } else if (GameBoard.getMoveCount() % 2 != 0) {
                         DisplayController.placeMarker(Players.player2.marker, index, square, Win.checkWin());
                         GameBoard.setMoveCount();
                         Win.checkWin();
                         GameBoard.setGameCount();
+                        DisplayController.highlightPlayer("player1");
                     }
                     Win.checkTie(Players.player2.name);
                 }
