@@ -1,0 +1,268 @@
+/* variables */ 
+$main-darker-color: #1D3557;
+$main-lighter-color: #A8DADC;
+$second-lighter-color: #c8f0f1;
+$darker-red-color: #98121c;
+$light-green-color: #f1faee;
+
+/* reset */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* base styles */ 
+body {
+    width: 100vw;
+    height: 100vh;
+    background-color: $main-darker-color;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $main-lighter-color;
+
+    h1 {
+        text-align: center;
+    }
+}
+
+main {
+    width: 100%;
+    height: 85%;
+    display: flex;
+    justify-content: center;
+}
+
+.player-choice-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: space-evenly;
+    background-color: #A8DADC;
+    border: 2px solid white;
+    border-radius: 25px;
+
+    h2 {
+        color:#1D3557;
+        font-family: Arial, Helvetica, sans-serif;
+        text-transform: uppercase;
+    }
+    
+    .buttons {
+        display: flex;
+        width: 100%;
+        justify-content: space-evenly;
+    }
+
+    button {
+        color: white;
+        background-color: #1D3557;
+        border: 3px solid white;
+        border-radius: 25px;
+    }
+
+    button:hover {
+        background-color: #98121c;
+    }
+}
+
+.info {
+    display: none;
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    div.player-info {
+        background-color: #f1faee;
+        color:#1D3557;
+        text-align: center;
+    }
+    
+    #vs {
+        color: white;
+    }
+
+    #winner {
+        display: none;
+        color: white;
+    }
+
+    #new-game {
+        display: none;
+        color: white;
+        background-color: #1D3557;
+        border: 3px solid white;
+    }
+
+    #new-game:hover {
+        background-color: #98121c;
+    }
+}
+
+.game-board {
+    .board {
+        background-color: $main-lighter-color;
+        display: grid;
+        gap: 5px 5px;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+
+        .tiles {
+            background-color: $light-green-color;
+            text-align: center;
+            color: #1D3557;
+            text-transform: capitalize;
+        }
+    }
+}
+
+/* fonts */ 
+body {
+    font-size: 20px;
+}
+
+h1 {
+    font-family: 'Bitter', serif;
+    text-transform: uppercase;
+    color: $main-darker-color;
+}
+
+/* mobile styles */
+
+header {
+    height: 15%;
+
+    h1 {
+        font-size: 7.5vh;
+    }
+}
+
+.player-choice-buttons {
+    margin-top: 45px;
+    width: 95%;
+    max-width: 500px;
+    height: 150px;
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    button {
+        width: 45%;
+        height: 50px;
+        font-size: 1em;
+        margin: 2px;
+    }
+}
+
+.info {
+    width: 100%;
+    font-size: 1em;
+    height: 8%;
+
+    div.player-info {
+        line-height: 40px;
+        width: 45%;
+        height: 40px;
+    }
+
+    #new-game {
+        border-radius: 25px;
+        width: 150px;
+        font-size: 0.8em;
+        height: 40px;
+    }
+}
+
+.game-board {
+    width: 400px;
+    max-width: 90%;
+    height: 480px;
+    max-height: 650px;
+
+    .board {
+        width: 100%;
+        height: 80%;
+
+        .tiles {
+            line-height: 125px;
+            font-size: 3rem;
+        }
+    }
+}
+
+
+/* small tablet+ styles */ 
+@media screen and (min-width: 620px) {
+    header {
+        height: 15%;
+    
+        h1 {
+            font-size: 10vh;
+        }
+    }
+    
+    .player-choice-buttons {
+        margin-top: 45px;
+        width: 90%;
+        max-width: 650px;
+        height: 200px;
+
+        h2 {
+            font-size: 2.5rem;
+        }
+
+        button {
+            width: 45%;
+            height: 80px;
+            font-size: 2rem;
+            margin: 2px;
+        }
+    }
+
+    .info {
+        margin: 20px 0;
+        width: 100%;
+        font-size: 2rem;
+        height: 10%;
+    
+        div.player-info {
+            line-height: 60px;
+            width: 45%;
+            height: 60px;
+        }
+
+        #new-game {
+            border-radius: 25px;
+            width: 200px;
+            font-size: 0.8em;
+            height: 60px;
+        }
+
+        #winner {
+            margin-left: 20px;
+        }
+    }
+    
+    .game-board {
+        width: 600px;
+        max-width: 90%;
+        height: 700px;
+        max-height: 650px;
+    
+        .board {
+            width: 100%;
+            height: 80%;
+            gap: 5px 5px;
+    
+            .tiles {
+                line-height: 150px;
+                font-size: 4rem;
+            }
+        }
+    }
+}

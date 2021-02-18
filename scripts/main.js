@@ -147,7 +147,7 @@ const Win = (() => {
 })();
 
 const DisplayController = (() => {
-    const boardHtml = document.querySelectorAll(".game-table td");
+    const boardHtml = document.querySelectorAll(".board div");
     const markerChoicesHtml = document.querySelectorAll(".marker-choice");
     const playerChoicesHtml = document.querySelectorAll(".player-choice");
     const playerChoicesButtonsHtml = document.querySelector(".player-choice-buttons");
@@ -222,10 +222,10 @@ const DisplayController = (() => {
     }
 
     const highlightSquares = (square) => {
-        boardHtml[square].style.background = "#A8DADC";
+        boardHtml[square].style.background = "#c8f0f1";
         boardHtml[square].style.transform = "rotate(10deg)";
         boardHtml[square].style["box-shadow"] = "15px 15px 3px 5px #08172c";
-        boardHtml[square].style.border = "3px solid white";
+        boardHtml[square].style.border = "2px solid white";
     }
 
     const highlightPlayer = (player) => {
