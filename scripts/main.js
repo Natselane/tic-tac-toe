@@ -15,25 +15,15 @@ const GameBoard = (() => {
         8: ["free", ""],
     }
 
-    const setGameCount = () => {
-        gameCount++;
-    }
+    const setGameCount = () => gameCount++;
 
-    const getGameCount = () => {
-        return gameCount;
-    }
+    const getGameCount = () => gameCount;
 
-    const resetGameCount = () => {
-        gameCount = 0;
-    }
-
-    const setMoveCount = () => {
-        moveCount++;
-    }
-
-    const getMoveCount = () => {
-        return moveCount;
-    }
+    const resetGameCount = () => gameCount = 0;
+    
+    const setMoveCount = () => moveCount++;
+    
+    const getMoveCount = () => moveCount;
 
     const resetGameArray = () => {
         for (let i = 0; i < 9; i++) {
@@ -55,13 +45,14 @@ const GameBoard = (() => {
 })();
 
 const Players = (() => { 
+
     let player1;
     let player2;
 
     const playerFactory = (name, marker) => {
         return { name, marker };
     }
-
+    
     const getRandomIntInclusive = (min, max) => {
         min = Math.ceil(min);
         max = Math.floor(max);
@@ -159,9 +150,8 @@ const DisplayController = (() => {
     const newGameHtml = document.querySelector("#new-game");
 
 
-    const hidePlayerChoice = () => {
-        playerChoicesButtonsHtml.style.display = "none";
-    }
+    const hidePlayerChoice = () => playerChoicesButtonsHtml.style.display = "none";
+    
 
     const hideMarkerChoice = () => {
         markerChoicesHtml.forEach(choice => {
@@ -169,9 +159,7 @@ const DisplayController = (() => {
         })
     }
 
-    const startGame = () => {
-        gameBoardHtml.style.display = "block";
-    }
+    const startGame = () => gameBoardHtml.style.display = "block";
 
     const changePlayer2Name = (player2Choice) => {
         if (player2Choice == "computer") {
@@ -316,7 +304,5 @@ const PlayGame = (() => {
         })     
     })
 
-    DisplayController.newGameHtml.addEventListener("click", () => {
-        window.location.reload();
-    })
+    DisplayController.newGameHtml.addEventListener("click", () => window.location.reload())
 })();
